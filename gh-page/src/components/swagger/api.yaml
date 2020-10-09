@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Glasswall File Rebuild Product API
-  description: These are HTTP endpoints that rebuild files with the Glasswall d-FIRST™ Engine.
+  title: Glasswall Transaction Event Store API
+  description: These are HTTP endpoints that query the transaction store
   version: 0.1.9
 servers:
   - url: http://localhost:32769
