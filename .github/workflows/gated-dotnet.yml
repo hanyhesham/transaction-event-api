@@ -20,8 +20,8 @@ jobs:
         with:
           dotnet-version: 3.1.101
       - name: Install dependencies 🔧
-        run: dotnet restore
+        run: dotnet restore .\TransactionEventHandler.sln
       - name: Build 🔨
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build .\TransactionEventHandler.sln --configuration Release --no-restore
       - name: Test 🧪
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test .\TransactionEventHandler.sln --no-restore --verbosity normal
