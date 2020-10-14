@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Glasswall.Administration.K8.TransactionEventApi.Common.Configuration;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Configuration.Validation;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Configuration.Validation.Errors;
 
@@ -21,17 +19,15 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Configuration
 
         public bool TryParse(string key, string rawValue, List<ConfigurationParserError> validationErrors, out object parsed)
         {
-            if (validationErrors == null) throw new ArgumentNullException(nameof(validationErrors));
-
             var thisItemsErrors = new List<ConfigurationParserError>();
 
             var length = rawValue?.Length ?? 0;
 
             if (length < _minLengthInclusive)
-                thisItemsErrors.Add(new ConfigurationParserError(key, $"ColumnValue must be at least {_minLengthInclusive} characters. Got {rawValue.Length}"));
+                thisItemsErrors.Add(new ConfigurationParserError(key, $"Value must be at least {_minLengthInclusive} characters. Got {rawValue?.Length}"));
 
-            if (length > _maxLengthInclusive)
-                thisItemsErrors.Add(new ConfigurationParserError(key, $"ColumnValue must not be longer than {_minLengthInclusive} characters. Got {rawValue.Length}"));
+            //if (length > _maxLengthInclusive)
+            //    thisItemsErrors.Add(new ConfigurationParserError(key, $"Value must not be longer than {_minLengthInclusive} characters. Got {rawValue?.Length}"));
 
             validationErrors.AddRange(thisItemsErrors);
 

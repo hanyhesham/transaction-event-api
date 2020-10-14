@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
@@ -24,17 +23,28 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Controllers
 
         [HttpPost]
         [ValidateModel]
-        public async Task<IActionResult> Get([Required][FromBody]GetTransactionsRequestV1 requestV1)
+        public async Task<IActionResult> GetTransactions([Required][FromBody]GetTransactionsRequestV1 request)
         {
-            if (requestV1 == null) throw new ArgumentNullException(nameof(requestV1));
+            _logger.LogInformation("Beginning get transactions request");
 
-            _logger.LogInformation("Beginning get transactions requestV1");
+            var transactions = await _transactionService.GetTransactionsAsync(request);
 
-            var transactions = await _transactionService.GetTransactionsAsync(requestV1);
-
-            _logger.LogInformation("Finished get transactions requestV1");
+            _logger.LogInformation("Finished get transactions request");
 
             return Ok(transactions);
+        }
+
+        [HttpGet]
+        [ValidateModel]
+        public async Task<IActionResult> GetDetail([Required] [FromQuery] string filePath)
+        {
+            _logger.LogInformation("Beginning get detail request");
+
+            var detail = await _transactionService.GetDetailAsync(filePath);
+
+            _logger.LogInformation("Finished get detail request");
+
+            return Ok(detail);
         }
     }
 }

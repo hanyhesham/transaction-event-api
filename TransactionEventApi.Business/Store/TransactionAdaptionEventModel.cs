@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Enums;
 
 namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
@@ -11,6 +12,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
     {
         public Dictionary<string, string> Properties { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel NewDocumentEvent(
             Guid? policyId = null,
             RequestMode? mode = null,
@@ -19,20 +21,22 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
         {
             var model = Create(EventId.NewDocument, fileId, timestamp);
             model.Properties.Add("PolicyId", policyId.GetValueOrDefault(Guid.NewGuid()).ToString());
-            model.Properties.Add("RequestMode", mode.GetValueOrDefault(RequestMode.Response).ToString());
+            model.Properties.Add("RequestMode", ((int)mode.GetValueOrDefault(RequestMode.Response)).ToString());
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel FileTypeDetectedEvent(
             FileType fileType,
             Guid? fileId = null,
             DateTimeOffset? timestamp = null)
         {
             var model = Create(EventId.FileTypeDetected, fileId, timestamp);
-            model.Properties.Add("FileType", fileType.ToString());
+            model.Properties.Add("FileType", ((int)fileType).ToString());
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel RebuildEventStarting(
             Guid? fileId = null,
             DateTimeOffset? timestamp = null)
@@ -41,6 +45,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel RebuildCompletedEvent(
             GwOutcome gwOutcome,
             Guid? fileId = null,
@@ -51,6 +56,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel AnalysisCompletedEvent(
             Guid? fileId = null,
             DateTimeOffset? timestamp = null)
@@ -59,6 +65,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel NcfsStartedEvent(
             Guid? fileId = null,
             DateTimeOffset? timestamp = null)
@@ -67,6 +74,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel NcfsCompletedEvent(
             NCFSOutcome ncfsOutcome,
             Guid? fileId = null,
@@ -77,6 +85,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return model;
         }
 
+        [ExcludeFromCodeCoverage]
         private static TransactionAdaptionEventModel Create(EventId eventId, Guid? fileId, DateTimeOffset? timestamp)
         {
             return new TransactionAdaptionEventModel
@@ -84,8 +93,8 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
                 Properties = new Dictionary<string, string>
                 {
                     ["FileId"] = fileId?.ToString() ?? Guid.NewGuid().ToString(),
-                    ["EventId"] = eventId.ToString(),
-                    ["Timestamp"] = timestamp.GetValueOrDefault(DateTimeOffset.UtcNow).ToString("O"),
+                    ["EventId"] = ((int)eventId).ToString(),
+                    ["Timestamp"] = timestamp.GetValueOrDefault(DateTimeOffset.UtcNow).ToString("O")
                 }
             };
         }

@@ -23,18 +23,11 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Configuration
 
             foreach (var property in typeof(TConfiguration).GetProperties())
             {
-                if (!_configurationBinders.ContainsKey(property.Name))
-                {
-                    errors.Add(new ConfigurationParserError(property.Name, "No validator setup for config item."));
-                }
-                else
-                {
-                    var rawValue = Environment.GetEnvironmentVariable(property.Name);
+                var rawValue = Environment.GetEnvironmentVariable(property.Name);
 
-                    if (_configurationBinders[property.Name].TryParse(property.Name, rawValue, errors, out var parsed))
-                    {
-                        property.SetValue(config, parsed);
-                    }
+                if (_configurationBinders[property.Name].TryParse(property.Name, rawValue, errors, out var parsed))
+                {
+                    property.SetValue(config, parsed);
                 }
             }
 

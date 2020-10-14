@@ -2,6 +2,7 @@
 {
     public interface ITransactionEventApiConfiguration
     {
-        string TransactionStoreConnectionStringCsv { get; } 
+        string TransactionStoreConnectionStringCsv { get; }
+        string ShareName { get; }
     }
 }

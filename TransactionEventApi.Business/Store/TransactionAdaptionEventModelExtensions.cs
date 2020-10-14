@@ -9,7 +9,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
     {
         public static TransactionAdaptionEventModel EventOrDefault(this IEnumerable<TransactionAdaptionEventModel> events, EventId eventId)
         {
-            return events?.FirstOrDefault(f => (EventId)int.Parse(f.PropertyOrDefault("EventId")) == eventId);
+            return events?.FirstOrDefault(f => int.TryParse(f.PropertyOrDefault("EventId"), out var id) && (EventId)id == eventId);
         }
 
         public static string PropertyOrDefault(this TransactionAdaptionEventModel @event, string key)

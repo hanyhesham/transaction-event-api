@@ -1,17 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Glasswall.Administration.K8.TransactionEventApi.Common.Serialisation;
 using Newtonsoft.Json;
 
 namespace Glasswall.Administration.K8.TransactionEventApi.Business.Serialisation
 {
-    public class JsonSerialiser : ISerialiser
+    public class JsonSerialiser : IJsonSerialiser
     {
-        public TObject Deserialise<TObject>(string jsonString)
+        public Task<TInput> Deserialize<TInput>(Stream input, Encoding encoding)
         {
-            if (jsonString == null) throw new ArgumentNullException(nameof(jsonString));
-             
-            return JsonConvert.DeserializeObject<TObject>(jsonString);
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            return InternalDeserializeStreamAsync<TInput>(input, encoding);
+        }
+
+        public Task<TOutput> Deserialize<TOutput>(string input)
+        {
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            return Task.FromResult(JsonConvert.DeserializeObject<TOutput>(input));
+        }
+
+        public Task<string> Serialize<TInput>(TInput input)
+        {
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            return Task.FromResult(JsonConvert.SerializeObject(input));
+        }
+
+        private static async Task<TInput> InternalDeserializeStreamAsync<TInput>(Stream input, Encoding encoding)
+        {
+            using var ms = new MemoryStream();
+            await input.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+            var json = encoding.GetString(fileBytes);
+            return JsonConvert.DeserializeObject<TInput>(json);
         }
     }
 }

@@ -6,6 +6,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - TransactionStoreConnectionStringCsv=
+      - ShareName=
     ports:
       - "32769:80"
       - "32768:443"
