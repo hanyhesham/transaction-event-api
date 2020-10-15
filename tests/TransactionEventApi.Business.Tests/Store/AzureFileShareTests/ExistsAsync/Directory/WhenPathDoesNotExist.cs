@@ -5,7 +5,7 @@ using Azure.Storage.Files.Shares;
 using Moq;
 using NUnit.Framework;
 
-namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync
+namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync.Directory
 {
     [TestFixture]
     public class WhenPathDoesNotExist : AzureFileShareTestBase
@@ -13,7 +13,6 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
         private string _input;
         private bool _output;
         private Mock<ShareDirectoryClient> _directory;
-        private Mock<ShareFileClient> _fileClient;
         private Mock<Response<bool>> _existsResponse;
 
         [OneTimeSetUp]
@@ -21,19 +20,16 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
         {
             SharedSetup();
 
-            ShareClient.Setup(s => s.GetRootDirectoryClient())
+            ShareClient.Setup(s => s.GetDirectoryClient(It.IsAny<string>()))
                 .Returns((_directory = new Mock<ShareDirectoryClient>()).Object);
 
-            _directory.Setup(s => s.GetFileClient(It.IsAny<string>()))
-                .Returns((_fileClient = new Mock<ShareFileClient>()).Object);
-
-            _fileClient.Setup(s => s.ExistsAsync(It.IsAny<CancellationToken>()))
+            _directory.Setup(s => s.ExistsAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((_existsResponse = new Mock<Response<bool>>()).Object);
 
             _existsResponse.Setup(s => s.Value)
                 .Returns(false);
 
-            _output = await ClassInTest.ExistsAsync(_input = "some-path");
+            _output = await ClassInTest.ExistsAsync(_input = "some-directory");
         }
 
         [Test]
@@ -43,22 +39,16 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
         }
 
         [Test]
-        public void DirectoryClient_Is_Created()
-        {
-            ShareClient.Verify(s => s.GetRootDirectoryClient(), Times.Once);
-        }
-
-        [Test]
         public void Directory_Is_Interrogated()
         {
-            _directory.Verify(s => s.GetFileClient(It.Is<string>(f => f == _input)), Times.Once);
+            ShareClient.Verify(s => s.GetDirectoryClient(It.Is<string>(f => f == _input)), Times.Once);
         }
 
         [Test]
-        public void File_Is_Checked_For_Existence()
+        public void Path_Is_Checked_For_Existence()
         {
-            _fileClient.Verify(s => s.ExistsAsync(It.IsAny<CancellationToken>()), Times.Once);
-            _fileClient.VerifyNoOtherCalls();
+            _directory.Verify(s => s.ExistsAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _directory.VerifyNoOtherCalls();
         }
     }
 }

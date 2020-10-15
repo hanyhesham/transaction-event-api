@@ -29,11 +29,10 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Serialisation
 
         private static async Task<TInput> InternalDeserializeStreamAsync<TInput>(Stream input, Encoding encoding)
         {
-            using var ms = new MemoryStream();
-            await input.CopyToAsync(ms);
-            var fileBytes = ms.ToArray();
-            var json = encoding.GetString(fileBytes);
-            return JsonConvert.DeserializeObject<TInput>(json);
+            var bytes = new byte[input.Length];
+            input.Position = 0;
+            await input.ReadAsync(bytes, 0, (int)input.Length);
+            return JsonConvert.DeserializeObject<TInput>(encoding.GetString(bytes));
         }
     }
 }

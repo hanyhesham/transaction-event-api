@@ -5,10 +5,10 @@ using Azure.Storage.Files.Shares;
 using Moq;
 using NUnit.Framework;
 
-namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync
+namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync.File
 {
     [TestFixture]
-    public class WhenPathExists : AzureFileShareTestBase
+    public class WhenPathDoesNotExist : AzureFileShareTestBase
     {
         private string _input;
         private bool _output;
@@ -31,15 +31,15 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
                 .ReturnsAsync((_existsResponse = new Mock<Response<bool>>()).Object);
 
             _existsResponse.Setup(s => s.Value)
-                .Returns(true);
+                .Returns(false);
 
-            _output = await ClassInTest.ExistsAsync(_input = "some-path");
+            _output = await ClassInTest.ExistsAsync(_input = "some-file.txt");
         }
 
         [Test]
         public void Output_Is_Correct()
         {
-            Assert.That(_output, Is.True);
+            Assert.That(_output, Is.False);
         }
 
         [Test]

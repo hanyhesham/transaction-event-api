@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage.Files.Shares;
 using Azure.Storage.Files.Shares.Models;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Services;
@@ -26,7 +28,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
         public Task<bool> ExistsAsync(string path)
         {
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("Value must not be null or whitespace", nameof(path));
-            return InternalExistsAsync(GetFileClient(path));
+            return InternalExistsAsync(path);
         }
 
         public Task<MemoryStream> DownloadAsync(string path)
@@ -37,7 +39,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
 
         private async Task<MemoryStream> InternalDownloadAsync(string path)
         {
-            var fileClient = GetFileClient(path);
+            var fileClient = _shareClient.GetRootDirectoryClient().GetFileClient(path);
 
             if (!await InternalExistsAsync(fileClient))
                 return null;
@@ -48,17 +50,44 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             return ms;
         }
 
+        private async Task<bool> InternalExistsAsync(string path)
+        {
+            if (Path.HasExtension(path))
+                return await InternalExistsAsync(_shareClient.GetRootDirectoryClient().GetFileClient(path));
+
+            return await InternalExistsAsync(_shareClient.GetDirectoryClient(path));
+        }
+
+        private static async Task<bool> InternalExistsAsync(ShareDirectoryClient client)
+        {
+            try
+            {
+                return await client.ExistsAsync();
+            }
+            catch (RequestFailedException rex)
+            {
+                if (rex.ErrorCode == ShareErrorCode.ParentNotFound)
+                    return false;
+
+                throw;
+            }
+        }
+
         private static async Task<bool> InternalExistsAsync(ShareFileClient client)
         {
-            return await client.ExistsAsync();
-        }
+            try
+            {
+                return await client.ExistsAsync();
+            }
+            catch (RequestFailedException rex)
+            {
+                if (rex.ErrorCode == ShareErrorCode.ParentNotFound)
+                    return false;
 
-        private ShareFileClient GetFileClient(string path)
-        {
-            var rootDirectory = _shareClient.GetRootDirectoryClient();
-            return rootDirectory.GetFileClient(path);
+                throw;
+            }
         }
-
+        
         private static async IAsyncEnumerable<string> RecurseDirectory(ShareDirectoryClient directory, IPathFilter pathFilter)
         {
             var directoryPath = directory.Path;

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync
+namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync.File
 {
     [TestFixture]
     public class WhenPathIsNotValid : AzureFileShareTestBase

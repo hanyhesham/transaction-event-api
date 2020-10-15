@@ -64,7 +64,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [Test]
         public void Download_Is_Attempted()
         {
-            Share1.Verify(s => s.DownloadAsync(It.Is<string>(x => x == $"{Input}/analysisreport.xml")), Times.Once);
+            Share1.Verify(s => s.DownloadAsync(It.Is<string>(x => x == $"{Input}/report.xml")), Times.Once);
             Share2.VerifyNoOtherCalls();
         }
 

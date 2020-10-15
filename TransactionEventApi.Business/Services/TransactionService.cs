@@ -56,7 +56,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Services
             {
                 if (!await fileStore.ExistsAsync(fileDirectory)) continue;
 
-                var fullPath = $"{fileDirectory}/analysisreport.xml";
+                var fullPath = $"{fileDirectory}/report.xml";
 
                 var analysisReportStream = await fileStore.DownloadAsync(fullPath);
 

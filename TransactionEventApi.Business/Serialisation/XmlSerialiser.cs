@@ -28,10 +28,8 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Serialisation
             if (encoding == null) throw new ArgumentNullException(nameof(encoding));
 
             var serializer = new XmlSerializer(typeof(TResult));
-            var reader = new StreamReader(input);
-            var obj = (TResult)serializer.Deserialize(reader);
-            reader.Close();
-
+            input.Position = 0;
+            var obj = (TResult)serializer.Deserialize(input);
             return Task.FromResult(obj);
         }
 

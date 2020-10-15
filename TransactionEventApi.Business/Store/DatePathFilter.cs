@@ -12,6 +12,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
     public class DatePathFilter : IPathFilter
     {
         // This assumes structure is for example from root '/[Year]/[Month]/[Day]/[Hour]/[FileId]/metadata.json'
+        // This assumes structure is for example from root '/[Year]/[Month]/[Day]/[Hour]/[FileId]/report.xml'
         private const int NumberOfPartsBeforeFileDirectory = 4;
 
         private readonly DateTimeOffset _start;

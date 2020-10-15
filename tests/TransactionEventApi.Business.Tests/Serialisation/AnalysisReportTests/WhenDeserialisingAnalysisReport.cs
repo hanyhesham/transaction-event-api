@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Serialisation;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.AnalysisReport;
@@ -23,7 +25,8 @@ namespace TransactionEventApi.Business.Tests.Serialisation.AnalysisReportTests
         [Test]
         public async Task No_Exception_Is_Thrown()
         {
-            var report = await _serialiser.Deserialize<GWallInfo>(Xml);
+            await using var ms = new MemoryStream(Encoding.UTF8.GetBytes(Xml));
+            var report = await _serialiser.Deserialize<GWallInfo>(ms, Encoding.UTF8);
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report.DocumentStatistics, Is.Not.Null);
