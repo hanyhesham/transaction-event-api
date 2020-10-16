@@ -108,3 +108,6 @@ bin/
 obj/
 *.csproj.user
 launchsettings.json
+Properties/
+*.v2
+*.suo

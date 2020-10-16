@@ -4,6 +4,8 @@ info:
   description: These are HTTP endpoints that query the transaction store
   version: 0.1.9
 servers:
+  - url: https://transactioneventapifunction20201016103513.azurewebsites.net
+    description: Azure function
   - url: http://localhost:32769
     description: Local Dev HTTP
   - url: http://localhost:32768
