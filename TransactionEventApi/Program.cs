@@ -9,6 +9,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi
     {
         public static void Main(string[] args)
         {
+        string password = "123456";
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -20,3 +21,6 @@ namespace Glasswall.Administration.K8.TransactionEventApi
                 });
     }
 }
+
+
+
