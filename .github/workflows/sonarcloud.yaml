@@ -1,7 +1,7 @@
 name: sonarCS
 env:
   SONAR_ORG: filetrust-2 
-  SONAR_PROJECT: transaction-event-api
+  SONAR_PROJECT: filetrust_transaction-event-api 
   
 on:
   push:
