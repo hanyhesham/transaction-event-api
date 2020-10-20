@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using NUnit.Framework;
 
 namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ListAsync
@@ -15,7 +16,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ListAsync
         [Test]
         public void Exception_Is_Thrown()
         {
-            Assert.That(() => ClassInTest.ListAsync(null),
+            Assert.That(() => ClassInTest.ListAsync(null, CancellationToken.None),
                 Throws.ArgumentNullException.With.Property(nameof(ArgumentNullException.ParamName)).EqualTo("pathFilter"));
         }
     }

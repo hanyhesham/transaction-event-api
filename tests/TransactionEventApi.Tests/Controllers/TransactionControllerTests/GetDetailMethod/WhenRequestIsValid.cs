@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,10 @@ namespace TransactionEventApi.Tests.Controllers.TransactionControllerTests.GetDe
 
             _expected = new GetDetailResponseV1();
 
-            Service.Setup(s => s.GetDetailAsync(It.IsAny<string>()))
+            Service.Setup(s => s.GetDetailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_expected);
 
-            _result = await ClassInTest.GetDetail(_input = "banana");
+            _result = await ClassInTest.GetDetail(_input = "banana", CancellationToken.None);
         }
 
         [Test]
@@ -53,7 +54,8 @@ namespace TransactionEventApi.Tests.Controllers.TransactionControllerTests.GetDe
         {
             Service.Verify(
                 s => s.GetDetailAsync(
-                    It.Is<string>(x => x == _input)), 
+                    It.Is<string>(x => x == _input), 
+                    It.IsAny<CancellationToken>()), 
                 Times.Once);
         }
 

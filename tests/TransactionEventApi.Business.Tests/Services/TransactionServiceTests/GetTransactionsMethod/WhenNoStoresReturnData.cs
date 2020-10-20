@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Store;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
@@ -13,7 +14,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
     public class WhenNoStoresReturnData : TransactionServiceTestBase
     {
         private GetTransactionsRequestV1 _input;
-        private IEnumerable<GetTransactionsResponseV1> _output;
+        private GetTransactionsResponseV1 _output;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -29,27 +30,27 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                 }
             };
 
-            Share1.Setup(s => s.ListAsync(It.IsAny<IPathFilter>()))
+            Share1.Setup(s => s.ListAsync(It.IsAny<IPathFilter>(), It.IsAny<CancellationToken>()))
                 .Returns(GetSomePaths());
 
-            Share2.Setup(s => s.ListAsync(It.IsAny<IPathFilter>()))
+            Share2.Setup(s => s.ListAsync(It.IsAny<IPathFilter>(), It.IsAny<CancellationToken>()))
                 .Returns(GetSomePaths());
 
-            _output = await ClassInTest.GetTransactionsAsync(_input);
+            _output = await ClassInTest.GetTransactionsAsync(_input, CancellationToken.None);
         }
 
         [Test]
         public void Each_Store_Is_Searched()
         {
-            Share1.Verify(s => s.ListAsync(It.IsAny<DatePathFilter>()), Times.Once);
-            Share2.Verify(s => s.ListAsync(It.IsAny<DatePathFilter>()), Times.Once);
+            Share1.Verify(s => s.ListAsync(It.IsAny<DatePathFilter>(), It.IsAny<CancellationToken>()), Times.Once);
+            Share2.Verify(s => s.ListAsync(It.IsAny<DatePathFilter>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         public void No_Data_Is_Downloaded()
         {
-            Share1.Verify(f => f.DownloadAsync(It.IsAny<string>()), Times.Never);
-            Share2.Verify(f => f.DownloadAsync(It.IsAny<string>()), Times.Never);
+            Share1.Verify(f => f.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+            Share2.Verify(f => f.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -61,7 +62,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [Test]
         public void Correct_Response_Is_Returned()
         {
-            Assert.That(_output, Is.Empty);
+            Assert.That(_output.Files, Is.Empty);
         }
 
         private static async IAsyncEnumerable<string> GetSomePaths()

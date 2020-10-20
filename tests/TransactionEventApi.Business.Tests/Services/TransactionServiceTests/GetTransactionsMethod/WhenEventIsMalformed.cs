@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Store;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
@@ -30,10 +31,10 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                 }
             };
 
-            Share1.Setup(s => s.ListAsync(It.IsAny<IPathFilter>()))
+            Share1.Setup(s => s.ListAsync(It.IsAny<IPathFilter>(), It.IsAny<CancellationToken>()))
                 .Returns(GetSomePaths(1));
 
-            Share2.Setup(s => s.ListAsync(It.IsAny<IPathFilter>()))
+            Share2.Setup(s => s.ListAsync(It.IsAny<IPathFilter>(), It.IsAny<CancellationToken>()))
                 .Returns(GetNoPaths());
         }
 
@@ -49,7 +50,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     }
                 });
 
-            await ClassInTest.GetTransactionsAsync(_input);
+            await ClassInTest.GetTransactionsAsync(_input, CancellationToken.None);
         }
 
         [Test]
@@ -69,7 +70,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     }
                 });
 
-            await ClassInTest.GetTransactionsAsync(_input);
+            await ClassInTest.GetTransactionsAsync(_input, CancellationToken.None);
         }
 
         [Test]
@@ -90,7 +91,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     }
                 });
 
-            await ClassInTest.GetTransactionsAsync(_input);
+            await ClassInTest.GetTransactionsAsync(_input, CancellationToken.None);
         }
 
         private static async IAsyncEnumerable<string> GetSomePaths(int store)

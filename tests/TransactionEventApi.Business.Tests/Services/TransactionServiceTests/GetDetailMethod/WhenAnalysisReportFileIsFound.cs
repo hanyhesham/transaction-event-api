@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Enums;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.AnalysisReport;
@@ -22,16 +23,16 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         {
             base.SharedSetup();
 
-            Share1.Setup(s => s.ExistsAsync(It.IsAny<string>()))
+            Share1.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            Share1.Setup(s => s.DownloadAsync(It.IsAny<string>()))
+            Share1.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_memoryStream = new MemoryStream());
 
             XmlSerialiser.Setup(s => s.Deserialize<GWallInfo>(It.IsAny<Stream>(), It.IsAny<Encoding>()))
                 .ReturnsAsync(_analysisReportDeserialised = new GWallInfo());
 
-            _output = await ClassInTest.GetDetailAsync(Input);
+            _output = await ClassInTest.GetDetailAsync(Input, CancellationToken.None);
         }
 
         [OneTimeTearDown]
@@ -64,14 +65,14 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [Test]
         public void Download_Is_Attempted()
         {
-            Share1.Verify(s => s.DownloadAsync(It.Is<string>(x => x == $"{Input}/report.xml")), Times.Once);
+            Share1.Verify(s => s.DownloadAsync(It.Is<string>(x => x == $"{Input}/report.xml"), It.IsAny<CancellationToken>()), Times.Once);
             Share2.VerifyNoOtherCalls();
         }
 
         [Test]
         public void Directory_Is_Checked_For_Existence()
         {
-            Share1.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input)), Times.Once);
+            Share1.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input), It.IsAny<CancellationToken>()), Times.Once);
             Share2.VerifyNoOtherCalls();
         }
     }

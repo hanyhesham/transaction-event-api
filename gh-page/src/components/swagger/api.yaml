@@ -33,104 +33,31 @@ paths:
                     TimestampRangeEnd:
                       type: string
                       example: "9999-12-31T23:59:59.9999999+00:00"
-                    # Risk:
-                    #   type: array
-                    #   example:
-                    #     - 0
-                    #     - 1
-                    #     - 2
-                    #   items:
-                    #     type: number
-                    #     description: >
-                    #       Each value indicates the risk of a file to filter upon:
-                    #       <br/><br/>* `16` - Safe,
-                    #       <br/><br/>* `17` - Blocked,
-                    #       <br/><br/>* `18` - Allowed
-                    # DetectionFileType:
-                    #   type: array
-                    #   example:
-                    #     - 16
-                    #     - 19
-                    #     - 33
-                    #   items:
-                    #     type: number
-                    #     description: >
-                    #       Each value indicates a file type in the list of Glasswall supported file types to filter upon:
-                    #       <br/><br/>* `16` - Pdf,
-                    #       <br/><br/>* `17` - Doc,
-                    #       <br/><br/>* `18` - Docx,
-                    #       <br/><br/>* `19` - Ppt,
-                    #       <br/><br/>* `20` - Pptx,
-                    #       <br/><br/>* `21` - Xls,
-                    #       <br/><br/>* `22` - Xlsx,
-                    #       <br/><br/>* `23` - Png,
-                    #       <br/><br/>* `24` - Jpeg,
-                    #       <br/><br/>* `25` - Gif,
-                    #       <br/><br/>* `26` - Emf,
-                    #       <br/><br/>* `27` - Wmf,
-                    #       <br/><br/>* `28` - Rtf,
-                    #       <br/><br/>* `29` - Bmp,
-                    #       <br/><br/>* `30` - Tiff,
-                    #       <br/><br/>* `31` - Pe,
-                    #       <br/><br/>* `32` - Macho,
-                    #       <br/><br/>* `33` - Elf,
-                    #       <br/><br/>* `34` - Mp4,
-                    #       <br/><br/>* `35` - Mp3,
-                    #       <br/><br/>* `36` - Mp2,
-                    #       <br/><br/>* `37` - Wav,
-                    #       <br/><br/>* `38` - Mpg,
-                    #       <br/><br/>* `39` - Coff
-                    # FileId: 
-                    #   type: array
-                    #   example: 
-                    #     - deadbeef-dead-beef-dead-beeffeedbeef
-                    #     - 125ccda2-a6c6-4f48-adb4-fe04cd42676b
-                    # Policy: 
-                    #   type: array
-                    #   example: 
-                    #     - deadbeef-dead-beef-dead-beeffeedbeef
-                    #     - 125ccda2-a6c6-4f48-adb4-fe04cd42676b
-      responses:
-        200:    # status code
-          description: OK - The transactions were retrieved successfully
-          content:          
-            "application/json":
-              schema:
-                type: array
-                description: An array of items each representing a transaction in the store
-                items:
-                  type: object
-                  description: An item representing a transaction in the store.
-                  properties:
-                    Timestamp:
-                      type: string
-                      example: "2020-01-01T00:00:00+00:00"
-                      description: Timestamp of the transaction entering the system
-                    FileId:
-                      type: string
-                      example: 0140daa9-7da3-4445-964c-e87a2e70f909
-                      description: Unique Identifier for the file
-                    Risk:
-                      type: string
-                      example: 1
-                      description: >
-                        Associated Risk of the file:
-                        <br/><br/>* `0` Unknown,
-                        <br/><br/>* `1` Safe
-                        <br/><br/>* `2` Blocked
-                        <br/><br/>* `3` Allowed
-                    ActivePolicyId:
-                      type: string
-                      description: The unique identifier for the policy used during the processing of this transaction
-                      example: a4484d16-7462-4997-bd84-c74655ac9cd2
-                    Directory:
-                      type: string
-                      description: The location in the store that the metadata was found - for use when getting analysis report
-                      example: 2021/1/1/0/0140daa9-7da3-4445-964c-e87a2e70f909
-                    DetectionFileType:
-                      type: number
-                      example: 38
-                      description: >
+                    Risks:
+                      type: array
+                      example:
+                        - 0
+                        - 1
+                        - 2
+                      items:
+                        type: number
+                        description: >
+                          Each value indicates the risk of a file to filter upon:
+                          <br/><br/>* `-1` - Unknown,
+                          <br/><br/>* `0` - Blocked By Policy,
+                          <br/><br/>* `1` - Blocked By NCFS,
+                          <br/><br/>* `2` - Allowed By Policy
+                          <br/><br/>* `3` - Allowed By NCFS
+                          <br/><br/>* `4` - Safe
+                    FileTypes:
+                      type: array
+                      example:
+                        - 16
+                        - 19
+                        - 33
+                      items:
+                        type: number
+                        description: >
                           Each value indicates a file type in the list of Glasswall supported file types to filter upon:
                           <br/><br/>* `16` - Pdf,
                           <br/><br/>* `17` - Doc,
@@ -156,6 +83,90 @@ paths:
                           <br/><br/>* `37` - Wav,
                           <br/><br/>* `38` - Mpg,
                           <br/><br/>* `39` - Coff
+                    FileIds: 
+                      type: array
+                      example: 
+                        - deadbeef-dead-beef-dead-beeffeedbeef
+                        - 125ccda2-a6c6-4f48-adb4-fe04cd42676b
+                    PolicyIds: 
+                      type: array
+                      example: 
+                        - deadbeef-dead-beef-dead-beeffeedbeef
+                        - 125ccda2-a6c6-4f48-adb4-fe04cd42676b
+      responses:
+        200:    # status code
+          description: OK - The transactions were retrieved successfully
+          content:          
+            "application/json":
+              schema:
+                type: object
+                description: A response detailing each transaction file matched by the input filter
+                properties:
+                  Count:
+                    type: number
+                    description: Number of items in the files array
+                    example: 1
+                  Files:
+                    type: array
+                    description: An array of items each representing a transaction file in the store
+                    items:
+                      type: object
+                      description: An item representing a transaction in the store.
+                      properties:
+                        Timestamp:
+                          type: string
+                          example: "2020-01-01T00:00:00+00:00"
+                          description: Timestamp of the transaction entering the system
+                        FileId:
+                          type: string
+                          example: 0140daa9-7da3-4445-964c-e87a2e70f909
+                          description: Unique Identifier for the file
+                        Risk:
+                          type: string
+                          example: 1
+                          description: >
+                            Associated Risk of the file:
+                            <br/><br/>* `0` Unknown,
+                            <br/><br/>* `1` Safe
+                            <br/><br/>* `2` Blocked
+                            <br/><br/>* `3` Allowed
+                        ActivePolicyId:
+                          type: string
+                          description: The unique identifier for the policy used during the processing of this transaction
+                          example: a4484d16-7462-4997-bd84-c74655ac9cd2
+                        Directory:
+                          type: string
+                          description: The location in the store that the metadata was found - for use when getting analysis report
+                          example: 2021/1/1/0/0140daa9-7da3-4445-964c-e87a2e70f909
+                        DetectionFileType:
+                          type: number
+                          example: 38
+                          description: >
+                              Each value indicates a file type in the list of Glasswall supported file types to filter upon:
+                              <br/><br/>* `16` - Pdf,
+                              <br/><br/>* `17` - Doc,
+                              <br/><br/>* `18` - Docx,
+                              <br/><br/>* `19` - Ppt,
+                              <br/><br/>* `20` - Pptx,
+                              <br/><br/>* `21` - Xls,
+                              <br/><br/>* `22` - Xlsx,
+                              <br/><br/>* `23` - Png,
+                              <br/><br/>* `24` - Jpeg,
+                              <br/><br/>* `25` - Gif,
+                              <br/><br/>* `26` - Emf,
+                              <br/><br/>* `27` - Wmf,
+                              <br/><br/>* `28` - Rtf,
+                              <br/><br/>* `29` - Bmp,
+                              <br/><br/>* `30` - Tiff,
+                              <br/><br/>* `31` - Pe,
+                              <br/><br/>* `32` - Macho,
+                              <br/><br/>* `33` - Elf,
+                              <br/><br/>* `34` - Mp4,
+                              <br/><br/>* `35` - Mp3,
+                              <br/><br/>* `36` - Mp2,
+                              <br/><br/>* `37` - Wav,
+                              <br/><br/>* `38` - Mpg,
+                              <br/><br/>* `39` - Coff
         400:
           description: Bad Request - This can occur when the JSON input is malformed, missing parameters or contains invalid parameters
         415:

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading;
+using NUnit.Framework;
 
 namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsync.File
 {
@@ -17,7 +18,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
         [TestCase(" ")]
         public void Exception_Thrown(string path)
         {
-            Assert.That(() => ClassInTest.ExistsAsync(path), ThrowsArgumentException("path", "Value must not be null or whitespace"));
+            Assert.That(() => ClassInTest.ExistsAsync(path, CancellationToken.None), ThrowsArgumentException("path", "Value must not be null or whitespace"));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NUnit.Framework;
 
 namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.GetDetailMethod
@@ -19,7 +20,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [TestCase(" ")]
         public void Throws_With_Invalid_Path(string path)
         {
-            Assert.That(() => ClassInTest.GetDetailAsync(path), 
+            Assert.That(() => ClassInTest.GetDetailAsync(path, CancellationToken.None), 
                 Throws.ArgumentException.With.Property(nameof(ArgumentException.ParamName))
                     .EqualTo("fileDirectory")
                     .And

@@ -67,7 +67,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ListAsync
                     pathActionSequence.Returns(PathAction.Stop);
             }
 
-            _output = await ClassInTest.ListAsync(_input.Object).AsEnumerableAsync();
+            _output = await ClassInTest.ListAsync(_input.Object, CancellationToken.None).AsEnumerableAsync();
         }
         
         [Test]

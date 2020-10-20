@@ -1,10 +1,13 @@
-﻿namespace Glasswall.Administration.K8.TransactionEventApi.Common.Enums
+﻿// ReSharper disable InconsistentNaming
+namespace Glasswall.Administration.K8.TransactionEventApi.Common.Enums
 {
     public enum Risk
     {
-        Unknown,
-        Safe,
-        Blocked,
-        Allowed
+        Unknown = -1,
+        BlockedByPolicy,
+        BlockedByNCFS,
+        AllowedByPolicy,
+        AllowedByNCFS,
+        Safe
     }
 }

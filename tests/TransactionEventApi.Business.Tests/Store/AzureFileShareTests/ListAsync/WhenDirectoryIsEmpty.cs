@@ -35,7 +35,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ListAsync
             pathSequence.Returns("");
             directoryContentsSequence.Returns(() => MockPageable(Enumerable.Empty<ShareFileItem>()).Object);
 
-            _output = await ClassInTest.ListAsync(_input.Object).AsEnumerableAsync();
+            _output = await ClassInTest.ListAsync(_input.Object, It.IsAny<CancellationToken>()).AsEnumerableAsync();
         }
         
         [Test]

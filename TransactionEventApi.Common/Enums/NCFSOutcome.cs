@@ -2,6 +2,7 @@
 {
     public enum NCFSOutcome
     {
+        Unknown = -1,
         Relayed,
         Replaced,
         Blocked

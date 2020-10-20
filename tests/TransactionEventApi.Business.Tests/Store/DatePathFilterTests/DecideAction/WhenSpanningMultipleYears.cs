@@ -61,6 +61,7 @@ namespace TransactionEventApi.Business.Tests.Store.DatePathFilterTests.DecideAct
         [TestCase("2021/1/1/0/feedbeef-7869-412f-8629-2006ef348ea4", PathAction.Collect)]
         [TestCase("2021/1/1/0/feeddead-7869-412f-8629-2006ef348ea4", PathAction.Collect)]
         [TestCase("2021/1/1/0/deddedde-7869-412f-8629-2006ef348ea4", PathAction.Collect)]
+        [TestCase("2021/1/1/1/1/1", PathAction.Collect)]
         public void Action_Is_Correct(string path, PathAction expectedAction)
         {
             var output = ClassInTest.DecideAction(path);

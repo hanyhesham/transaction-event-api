@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading;
+using NUnit.Framework;
 
 namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.DownloadAsync
 {
@@ -17,7 +18,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.DownloadA
         [TestCase(" ")]
         public void Exception_Thrown(string path)
         {
-            Assert.That(() => ClassInTest.DownloadAsync(path), ThrowsArgumentException("path", "Value must not be null or whitespace"));
+            Assert.That(() => ClassInTest.DownloadAsync(path, CancellationToken.None), ThrowsArgumentException("path", "Value must not be null or whitespace"));
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Serialisation;
@@ -32,7 +33,8 @@ namespace TransactionEventApi.Function
         [FunctionName("transactions")]
         public async Task<IActionResult> GetTransactions(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "v1/transactions")] HttpRequest req,
-            ILogger log)
+            ILogger log,
+            CancellationToken cancellationToken)
         {
             if (req.Method.ToUpper() == "POST")
             {
@@ -40,11 +42,11 @@ namespace TransactionEventApi.Function
 
                 var requestDeserialized = await _jsonSerialiser.Deserialize<GetTransactionsRequestV1>(request);
 
-                return await _controller.GetTransactions(requestDeserialized);
+                return await _controller.GetTransactions(requestDeserialized, cancellationToken);
             }
 
             var filePath = req.GetQueryParameterDictionary()["filePath"];
-            return await _controller.GetDetail(filePath);
+            return await _controller.GetDetail(filePath, cancellationToken);
         }
     }
 }

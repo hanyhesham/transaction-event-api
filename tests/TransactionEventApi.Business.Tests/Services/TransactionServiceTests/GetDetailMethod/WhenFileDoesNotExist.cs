@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Enums;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Moq;
@@ -18,7 +19,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         {
             base.SharedSetup();
 
-            _output = await ClassInTest.GetDetailAsync(Input);
+            _output = await ClassInTest.GetDetailAsync(Input, CancellationToken.None);
         }
 
         [Test]
@@ -38,15 +39,15 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [Test]
         public void Download_Is_Not_Attempted()
         {
-            Share1.Verify(s => s.DownloadAsync(It.IsAny<string>()), Times.Never);
-            Share2.Verify(s => s.DownloadAsync(It.IsAny<string>()), Times.Never);
+            Share1.Verify(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+            Share2.Verify(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
         public void Directory_Is_Checked_For_Existence()
         {
-            Share1.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input)), Times.Once);
-            Share2.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input)), Times.Once);
+            Share1.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input), It.IsAny<CancellationToken>()), Times.Once);
+            Share2.Verify(s => s.ExistsAsync(It.Is<string>(x => x == Input), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

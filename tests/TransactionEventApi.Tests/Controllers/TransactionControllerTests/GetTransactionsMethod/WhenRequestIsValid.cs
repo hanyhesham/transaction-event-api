@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +15,19 @@ namespace TransactionEventApi.Tests.Controllers.TransactionControllerTests.GetTr
     {
         private GetTransactionsRequestV1 _input;
         private IActionResult _result;
-        private IEnumerable<GetTransactionsResponseV1> _expected;
+        private GetTransactionsResponseV1 _expected;
 
         [OneTimeSetUp]
         public async Task OnetimeSetup()
         {
             base.OnetimeSetupShared();
 
-            _expected = new List<GetTransactionsResponseV1>();
+            _expected = new GetTransactionsResponseV1();
 
-            Service.Setup(s => s.GetTransactionsAsync(It.IsAny<GetTransactionsRequestV1>()))
+            Service.Setup(s => s.GetTransactionsAsync(It.IsAny<GetTransactionsRequestV1>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_expected);
 
-            _result = await ClassInTest.GetTransactions(_input = new GetTransactionsRequestV1());
+            _result = await ClassInTest.GetTransactions(_input = new GetTransactionsRequestV1(), CancellationToken.None);
         }
 
         [Test]
@@ -54,7 +55,8 @@ namespace TransactionEventApi.Tests.Controllers.TransactionControllerTests.GetTr
         {
             Service.Verify(
                 s => s.GetTransactionsAsync(
-                    It.Is<GetTransactionsRequestV1>(x => x == _input)), 
+                    It.Is<GetTransactionsRequestV1>(x => x == _input),
+                    It.IsAny<CancellationToken>()), 
                 Times.Once);
         }
 

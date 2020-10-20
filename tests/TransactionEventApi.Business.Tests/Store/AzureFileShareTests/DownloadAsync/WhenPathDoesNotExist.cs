@@ -49,7 +49,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.DownloadA
             _existsResponse.Setup(s => s.Value)
                 .Returns(false);
 
-            _output = await ClassInTest.DownloadAsync(_input = "some-path");
+            _output = await ClassInTest.DownloadAsync(_input = "some-path", CancellationToken.None);
         }
 
         [OneTimeTearDown]

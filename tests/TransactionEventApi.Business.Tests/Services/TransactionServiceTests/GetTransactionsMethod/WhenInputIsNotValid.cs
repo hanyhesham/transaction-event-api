@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading;
+using NUnit.Framework;
 
 namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.GetTransactionsMethod
 {
@@ -14,7 +15,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
         [Test]
         public void Throws_With_Invalid_Path()
         {
-            Assert.That(() => ClassInTest.GetTransactionsAsync(null), ThrowsArgumentNullException("request"));
+            Assert.That(() => ClassInTest.GetTransactionsAsync(null, CancellationToken.None), ThrowsArgumentNullException("request"));
         }
     }
 }

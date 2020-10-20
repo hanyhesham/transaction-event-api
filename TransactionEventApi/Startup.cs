@@ -87,7 +87,6 @@ namespace Glasswall.Administration.K8.TransactionEventApi
                 app.UseDeveloperExceptionPage();
 
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.Use((context, next) =>

@@ -29,7 +29,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
             _existsResponse.Setup(s => s.Value)
                 .Returns(true);
 
-            _output = await ClassInTest.ExistsAsync(_input = "some-directory");
+            _output = await ClassInTest.ExistsAsync(_input = "some-directory", CancellationToken.None);
         }
 
         [Test]

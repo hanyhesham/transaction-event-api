@@ -41,7 +41,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.DownloadA
                 .ReturnsAsync((_response = new Mock<Response<ShareFileDownloadInfo>>()).Object);
 
             _response.Setup(s => s.Value)
-                .Returns(FilesModelFactory.StorageFileDownloadInfo(content: _expected));
+                .Returns(FilesModelFactory.StorageFileDownloadInfo(content: _expected, contentLength: _expected.Length));
 
             _fileClient.Setup(s => s.ExistsAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((_existsResponse = new Mock<Response<bool>>()).Object);
@@ -49,7 +49,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.DownloadA
             _existsResponse.Setup(s => s.Value)
                 .Returns(true);
 
-            _output = await ClassInTest.DownloadAsync(_input = "some-path");
+            _output = await ClassInTest.DownloadAsync(_input = "some-path", CancellationToken.None);
         }
 
         [OneTimeTearDown]

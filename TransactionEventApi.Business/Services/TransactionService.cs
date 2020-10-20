@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Store;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Enums;
@@ -9,7 +12,6 @@ using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Serialisation;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Services;
 using Microsoft.Extensions.Logging;
-using EventId = Glasswall.Administration.K8.TransactionEventApi.Common.Enums.EventId;
 
 namespace Glasswall.Administration.K8.TransactionEventApi.Business.Services
 {
@@ -32,33 +34,33 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Services
             _xmlSerialiser = xmlSerialiser ?? throw new ArgumentNullException(nameof(xmlSerialiser));
         }
 
-        public Task<IEnumerable<GetTransactionsResponseV1>> GetTransactionsAsync(GetTransactionsRequestV1 request)
+        public Task<GetTransactionsResponseV1> GetTransactionsAsync(GetTransactionsRequestV1 request, CancellationToken cancellationToken)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            return InternalGetTransactionsAsync(request);
+            return InternalGetTransactionsAsync(request, cancellationToken);
         }
 
-        public Task<GetDetailResponseV1> GetDetailAsync(string fileDirectory)
+        public Task<GetDetailResponseV1> GetDetailAsync(string fileDirectory, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(fileDirectory))
                 throw new ArgumentException("Value must not be null or whitespace", nameof(fileDirectory));
 
-            return InternalTryGetDetailAsync(fileDirectory);
+            return InternalTryGetDetailAsync(fileDirectory, cancellationToken);
         }
 
-        private async Task<GetDetailResponseV1> InternalTryGetDetailAsync(string fileDirectory)
+        private async Task<GetDetailResponseV1> InternalTryGetDetailAsync(string fileDirectory, CancellationToken cancellationToken)
         {
             GWallInfo analysisReport = null;
             var status = DetailStatus.FileNotFound;
 
             foreach (var fileStore in _fileShares)
             {
-                if (!await fileStore.ExistsAsync(fileDirectory)) continue;
+                if (!await fileStore.ExistsAsync(fileDirectory, cancellationToken)) continue;
 
                 var fullPath = $"{fileDirectory}/report.xml";
 
-                var analysisReportStream = await fileStore.DownloadAsync(fullPath);
+                var analysisReportStream = await fileStore.DownloadAsync(fullPath, cancellationToken);
 
                 if (analysisReportStream == null)
                 {
@@ -78,39 +80,61 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Services
             };
         }
 
-        private async Task<IEnumerable<GetTransactionsResponseV1>> InternalGetTransactionsAsync(GetTransactionsRequestV1 request)
+        private async Task<GetTransactionsResponseV1> InternalGetTransactionsAsync(
+            GetTransactionsRequestV1 request, 
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation("Searching file store ");
 
-            var responseItems = new List<GetTransactionsResponseV1>();
+            var items = new List<GetTransactionsResponseV1File>();
 
-            foreach (var share in _fileShares)
+            foreach (var share in _fileShares.AsParallel())
             {
-                await foreach(var fileDirectory in share.ListAsync(new DatePathFilter(request.Filter)))
+                await foreach (var item in HandleShare(share, request.Filter, cancellationToken))
                 {
-                    using var ms = await share.DownloadAsync($"{fileDirectory}/metadata.json");
-
-                    var eventFile = await _jsonSerialiser.Deserialize<TransactionAdapationEventMetadataFile>(ms, Encoding.UTF8);
-                    var newDocumentEvent = eventFile.Events.EventOrDefault(EventId.NewDocument);
-                    var fileTypeDetectedEvent = eventFile.Events.EventOrDefault(EventId.FileTypeDetected);
-
-                    Guid.TryParse(newDocumentEvent.PropertyOrDefault("PolicyId"), out var policyId);
-                    Guid.TryParse(newDocumentEvent.PropertyOrDefault("FileId"), out var fileId);
-                    DateTimeOffset.TryParse(newDocumentEvent.PropertyOrDefault("Timestamp"), out var timestamp);
-
-                    responseItems.Add(new GetTransactionsResponseV1
-                    {
-                        ActivePolicyId = policyId,
-                        DetectionFileType = fileTypeDetectedEvent.PropertyOrDefault<FileType>("FileType").GetValueOrDefault(FileType.Unknown),
-                        FileId = fileId,
-                        Risk = Risk.Safe, // TBD - need to work out logic
-                        Timestamp = timestamp,
-                        Directory = fileDirectory
-                    });
+                    items.Add(item);
                 }
             }
 
-            return responseItems;
+            return new GetTransactionsResponseV1
+            {
+                Files = items
+            };
+        }
+
+        private async IAsyncEnumerable<GetTransactionsResponseV1File> HandleShare(
+            IFileShare share,
+            FileStoreFilterV1 filter, 
+            [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            await foreach (var fileDirectory in share.ListAsync(new DatePathFilter(filter), cancellationToken))
+            {
+                if (filter.AllFileIdsFound) yield break;
+
+                var eventFile = await DownloadFile(share, fileDirectory, cancellationToken);
+
+                if (!eventFile.TryParseEventDateWithFilter(filter, out var timestamp)) continue;
+                if (!eventFile.TryParseFileIdWithFilter(filter, out var fileId)) continue;
+                if (!eventFile.TryParseFileTypeWithFilter(filter, out var fileType)) continue;
+                if (!eventFile.TryParseRiskWithFilter(filter, out var risk)) continue;
+                if (!eventFile.TryParsePolicyIdWithFilter(filter, out var policyId)) continue;
+
+                yield return new GetTransactionsResponseV1File
+                {
+                    ActivePolicyId = policyId,
+                    DetectionFileType = fileType,
+                    FileId = fileId,
+                    Risk = risk,
+                    Timestamp = timestamp,
+                    Directory = fileDirectory
+                };
+            }
+        }
+
+        private async Task<TransactionAdapationEventMetadataFile> DownloadFile(IFileShare share, string fileDirectory, CancellationToken cancellationToken)
+        {
+            using var ms = await share.DownloadAsync($"{fileDirectory}/metadata.json", cancellationToken);
+            return await _jsonSerialiser.Deserialize<TransactionAdapationEventMetadataFile>(ms, Encoding.UTF8);
         }
     }
 }

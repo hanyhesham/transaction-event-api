@@ -34,7 +34,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
             _directory.Setup(s => s.ExistsAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(ex);
 
-            var exists = await ClassInTest.ExistsAsync("some-path");
+            var exists = await ClassInTest.ExistsAsync("some-path", CancellationToken.None);
             Assert.That(exists, Is.False);
         }
         
@@ -50,7 +50,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
             _directory.Setup(s => s.ExistsAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(ex);
 
-            Assert.That(async() => await ClassInTest.ExistsAsync("some-path"), Throws.Exception.InstanceOf<RequestFailedException>());
+            Assert.That(async() => await ClassInTest.ExistsAsync("some-path", CancellationToken.None), Throws.Exception.InstanceOf<RequestFailedException>());
         }
     }
 }

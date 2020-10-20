@@ -33,7 +33,7 @@ namespace TransactionEventApi.Business.Tests.Store.AzureFileShareTests.ExistsAsy
             _existsResponse.Setup(s => s.Value)
                 .Returns(true);
 
-            _output = await ClassInTest.ExistsAsync(_input = "some-path.txt");
+            _output = await ClassInTest.ExistsAsync(_input = "some-path.txt", CancellationToken.None);
         }
 
         [Test]
