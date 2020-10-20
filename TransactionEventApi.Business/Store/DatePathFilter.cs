@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Services;
@@ -31,9 +30,12 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
         {
             var parts = path?.Split('/') ?? Enumerable.Empty<string>().ToArray();
 
-            return ShouldRecurse(parts) ? PathAction.Recurse
-                     : parts.Length > NumberOfPartsBeforeFileDirectory ? PathAction.Collect
-                     : PathAction.Stop;
+            if (ShouldRecurse(parts))
+                return PathAction.Recurse;
+                
+            return parts.Length > NumberOfPartsBeforeFileDirectory
+                    ? PathAction.Collect
+                    : PathAction.Stop;
         }
 
         private bool ShouldRecurse(IReadOnlyList<string> parts)

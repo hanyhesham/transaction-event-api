@@ -76,7 +76,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
 
         [ExcludeFromCodeCoverage]
         public static TransactionAdaptionEventModel NcfsCompletedEvent(
-            NCFSOutcome ncfsOutcome,
+            NcfsOutcome ncfsOutcome,
             Guid? fileId = null,
             DateTimeOffset? timestamp = null)
         {

@@ -52,7 +52,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     {
                         TransactionAdaptionEventModel.AnalysisCompletedEvent(fileId),
                         TransactionAdaptionEventModel.FileTypeDetectedEvent(FileType.Bmp, fileId),
-                        TransactionAdaptionEventModel.NcfsCompletedEvent(NCFSOutcome.Blocked, fileId),
+                        TransactionAdaptionEventModel.NcfsCompletedEvent(NcfsOutcome.Blocked, fileId),
                         TransactionAdaptionEventModel.NcfsStartedEvent(fileId),
                         TransactionAdaptionEventModel.NewDocumentEvent(fileId),
                         TransactionAdaptionEventModel.RebuildCompletedEvent(GwOutcome.Failed, fileId),

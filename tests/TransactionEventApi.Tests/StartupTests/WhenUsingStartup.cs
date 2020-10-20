@@ -4,7 +4,6 @@ using System.Linq;
 using Azure.Storage.Files.Shares;
 using Glasswall.Administration.K8.TransactionEventApi;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Configuration;
-using Glasswall.Administration.K8.TransactionEventApi.Business.Store;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Configuration;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Services;
 using Microsoft.Extensions.Configuration;

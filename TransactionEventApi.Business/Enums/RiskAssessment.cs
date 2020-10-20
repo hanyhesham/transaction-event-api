@@ -4,18 +4,18 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Enums
 {
     public static class RiskAssessment
     {
-        public static Risk DetermineRisk(NCFSOutcome ncfsOutcome, GwOutcome gwOutcome)
+        public static Risk DetermineRisk(NcfsOutcome ncfsOutcome, GwOutcome gwOutcome)
         {
             Risk risk;
             switch (ncfsOutcome)
             {
-                case NCFSOutcome.Relayed:
+                case NcfsOutcome.Relayed:
                     risk = Risk.AllowedByNCFS;
                     break;
-                case NCFSOutcome.Replaced:
+                case NcfsOutcome.Replaced:
                     risk = Risk.Safe;
                     break;
-                case NCFSOutcome.Blocked:
+                case NcfsOutcome.Blocked:
                     risk = Risk.BlockedByNCFS;
                     break;
                 default:

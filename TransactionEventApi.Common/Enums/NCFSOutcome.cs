@@ -1,6 +1,6 @@
 ﻿namespace Glasswall.Administration.K8.TransactionEventApi.Common.Enums
 {
-    public enum NCFSOutcome
+    public enum NcfsOutcome
     {
         Unknown = -1,
         Relayed,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,7 +52,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     {
                         TransactionAdaptionEventModel.AnalysisCompletedEvent(_fileId),
                         TransactionAdaptionEventModel.FileTypeDetectedEvent(FileType.Bmp, _fileId),
-                        TransactionAdaptionEventModel.NcfsCompletedEvent(NCFSOutcome.Blocked, _fileId),
+                        TransactionAdaptionEventModel.NcfsCompletedEvent(NcfsOutcome.Blocked, _fileId),
                         TransactionAdaptionEventModel.NcfsStartedEvent(_fileId),
                         TransactionAdaptionEventModel.NewDocumentEvent(fileId: _fileId),
                         TransactionAdaptionEventModel.RebuildCompletedEvent(GwOutcome.Failed, _fileId),
@@ -75,7 +74,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     {
                         TransactionAdaptionEventModel.AnalysisCompletedEvent(_fileId),
                         TransactionAdaptionEventModel.FileTypeDetectedEvent(FileType.Bmp, _fileId),
-                        TransactionAdaptionEventModel.NcfsCompletedEvent(NCFSOutcome.Blocked, _fileId),
+                        TransactionAdaptionEventModel.NcfsCompletedEvent(NcfsOutcome.Blocked, _fileId),
                         TransactionAdaptionEventModel.NcfsStartedEvent(_fileId),
                         badEvent,
                         TransactionAdaptionEventModel.RebuildCompletedEvent(GwOutcome.Failed, _fileId),
@@ -105,7 +104,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     {
                         TransactionAdaptionEventModel.AnalysisCompletedEvent(_fileId),
                         badEvent,
-                        TransactionAdaptionEventModel.NcfsCompletedEvent(NCFSOutcome.Blocked, _fileId),
+                        TransactionAdaptionEventModel.NcfsCompletedEvent(NcfsOutcome.Blocked, _fileId),
                         TransactionAdaptionEventModel.NcfsStartedEvent(_fileId),
                         TransactionAdaptionEventModel.NewDocumentEvent(),
                         TransactionAdaptionEventModel.RebuildCompletedEvent(GwOutcome.Failed, _fileId),
@@ -130,7 +129,7 @@ namespace TransactionEventApi.Business.Tests.Services.TransactionServiceTests.Ge
                     {
                         TransactionAdaptionEventModel.AnalysisCompletedEvent(_fileId),
                         badEvent,
-                        TransactionAdaptionEventModel.NcfsCompletedEvent(NCFSOutcome.Blocked, _fileId),
+                        TransactionAdaptionEventModel.NcfsCompletedEvent(NcfsOutcome.Blocked, _fileId),
                         TransactionAdaptionEventModel.NcfsStartedEvent(_fileId),
                         TransactionAdaptionEventModel.NewDocumentEvent(),
                         TransactionAdaptionEventModel.RebuildCompletedEvent(GwOutcome.Failed, _fileId),

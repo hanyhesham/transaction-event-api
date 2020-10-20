@@ -8,23 +8,23 @@ namespace TransactionEventApi.Business.Tests.Enums
     public class RiskAssessmentTests
     {
         [Test]
-        [TestCase(NCFSOutcome.Relayed, GwOutcome.Unknown, Risk.AllowedByNCFS)]
-        [TestCase(NCFSOutcome.Relayed, GwOutcome.Replace, Risk.AllowedByNCFS)]
-        [TestCase(NCFSOutcome.Relayed, GwOutcome.Unmodified, Risk.AllowedByNCFS)]
-        [TestCase(NCFSOutcome.Relayed, GwOutcome.Failed, Risk.AllowedByNCFS)]
-        [TestCase(NCFSOutcome.Replaced, GwOutcome.Unknown, Risk.Safe)]
-        [TestCase(NCFSOutcome.Replaced, GwOutcome.Replace, Risk.Safe)]
-        [TestCase(NCFSOutcome.Replaced, GwOutcome.Unmodified, Risk.Safe)]
-        [TestCase(NCFSOutcome.Replaced, GwOutcome.Failed, Risk.Safe)]
-        [TestCase(NCFSOutcome.Blocked, GwOutcome.Unknown, Risk.BlockedByNCFS)]
-        [TestCase(NCFSOutcome.Blocked, GwOutcome.Replace, Risk.BlockedByNCFS)]
-        [TestCase(NCFSOutcome.Blocked, GwOutcome.Unmodified, Risk.BlockedByNCFS)]
-        [TestCase(NCFSOutcome.Blocked, GwOutcome.Failed, Risk.BlockedByNCFS)]
-        [TestCase(NCFSOutcome.Unknown, GwOutcome.Unknown, Risk.Unknown)]
-        [TestCase(NCFSOutcome.Unknown, GwOutcome.Replace, Risk.Safe)]
-        [TestCase(NCFSOutcome.Unknown, GwOutcome.Unmodified, Risk.AllowedByPolicy)]
-        [TestCase(NCFSOutcome.Unknown, GwOutcome.Failed, Risk.BlockedByPolicy)]
-        public void Correct_Risk_Is_Identified(NCFSOutcome ncfsOutcome, GwOutcome gwOutcome, Risk expected)
+        [TestCase(NcfsOutcome.Relayed, GwOutcome.Unknown, Risk.AllowedByNCFS)]
+        [TestCase(NcfsOutcome.Relayed, GwOutcome.Replace, Risk.AllowedByNCFS)]
+        [TestCase(NcfsOutcome.Relayed, GwOutcome.Unmodified, Risk.AllowedByNCFS)]
+        [TestCase(NcfsOutcome.Relayed, GwOutcome.Failed, Risk.AllowedByNCFS)]
+        [TestCase(NcfsOutcome.Replaced, GwOutcome.Unknown, Risk.Safe)]
+        [TestCase(NcfsOutcome.Replaced, GwOutcome.Replace, Risk.Safe)]
+        [TestCase(NcfsOutcome.Replaced, GwOutcome.Unmodified, Risk.Safe)]
+        [TestCase(NcfsOutcome.Replaced, GwOutcome.Failed, Risk.Safe)]
+        [TestCase(NcfsOutcome.Blocked, GwOutcome.Unknown, Risk.BlockedByNCFS)]
+        [TestCase(NcfsOutcome.Blocked, GwOutcome.Replace, Risk.BlockedByNCFS)]
+        [TestCase(NcfsOutcome.Blocked, GwOutcome.Unmodified, Risk.BlockedByNCFS)]
+        [TestCase(NcfsOutcome.Blocked, GwOutcome.Failed, Risk.BlockedByNCFS)]
+        [TestCase(NcfsOutcome.Unknown, GwOutcome.Unknown, Risk.Unknown)]
+        [TestCase(NcfsOutcome.Unknown, GwOutcome.Replace, Risk.Safe)]
+        [TestCase(NcfsOutcome.Unknown, GwOutcome.Unmodified, Risk.AllowedByPolicy)]
+        [TestCase(NcfsOutcome.Unknown, GwOutcome.Failed, Risk.BlockedByPolicy)]
+        public void Correct_Risk_Is_Identified(NcfsOutcome ncfsOutcome, GwOutcome gwOutcome, Risk expected)
         {
             var actual = RiskAssessment.DetermineRisk(ncfsOutcome, gwOutcome);
             Assert.That(actual, Is.EqualTo(expected));

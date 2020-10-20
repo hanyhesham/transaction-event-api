@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Glasswall.Administration.K8.TransactionEventApi
 {
@@ -34,7 +35,12 @@ namespace Glasswall.Administration.K8.TransactionEventApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging();
+            services.AddLogging(logging =>
+            {
+                logging.AddDebug();
+            })
+                .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug);
+
             services.AddControllers();
             services.AddCors(options =>
             {
@@ -52,7 +58,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi
             services.TryAddTransient<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
             {
                 {nameof(ITransactionEventApiConfiguration.TransactionStoreConnectionStringCsv), new StringValidator(1)},
-                {nameof(ITransactionEventApiConfiguration.ShareName), new StringValidator(1, 100)}
+                {nameof(ITransactionEventApiConfiguration.ShareName), new StringValidator(1)}
             });
             services.TryAddSingleton<ITransactionEventApiConfiguration>(serviceProvider =>
             {

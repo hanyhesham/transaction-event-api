@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Glasswall.Administration.K8.TransactionEventApi.Business.Enums;
-using Glasswall.Administration.K8.TransactionEventApi.Business.Services;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Enums;
 using Glasswall.Administration.K8.TransactionEventApi.Common.Models.V1;
 // ReSharper disable ConvertIfStatementToReturnStatement
@@ -82,7 +81,7 @@ namespace Glasswall.Administration.K8.TransactionEventApi.Business.Store
             TryGetEvent(EventId.NCFSCompletedEvent, out var ncfsEvent);
 
             var gwOutcome = rebuildEvent.PropertyOrDefault<GwOutcome>("GwOutcome") ?? GwOutcome.Unknown;
-            var ncfsOutcome = ncfsEvent.PropertyOrDefault<NCFSOutcome>("NCFSOutcome") ?? NCFSOutcome.Unknown;
+            var ncfsOutcome = ncfsEvent.PropertyOrDefault<NcfsOutcome>("NCFSOutcome") ?? NcfsOutcome.Unknown;
 
             risk = RiskAssessment.DetermineRisk(ncfsOutcome, gwOutcome);
 

@@ -3,7 +3,7 @@ env:
   SONAR_ORG: filetrust-2 
   SONAR_PROJECT: transaction-event-api
 on:
-  push:
+  pull_request:
     branches: [ develop ]
 jobs:
   build:
