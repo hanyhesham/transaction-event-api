@@ -1,6 +1,4 @@
- 
-name: js-sonar
-
+name: nodejs-sonar
 on:
   push:
     branches: [ master ]
