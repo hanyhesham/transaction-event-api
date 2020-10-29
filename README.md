@@ -17,7 +17,6 @@ Glasswall Transaction API
 - node/npm
 
 # How to
-
 ## Debug the API locally
 
 - Open TransactionEventHandler.sln
